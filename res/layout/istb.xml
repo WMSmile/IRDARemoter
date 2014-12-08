@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:id="@id/RootView" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="vertical" android:id="@id/main_page" android:background="@drawable/back_bg" android:layout_width="fill_parent" android:layout_height="fill_parent">
+        <RelativeLayout android:gravity="center" android:layout_gravity="center" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="40.0dip">
+            <Button android:textColor="#ffffffff" android:id="@id/but_exit" android:background="@drawable/base_bank3" android:layout_width="60.0dip" android:layout_height="35.0dip" android:text="@string/but_home" android:layout_alignParentLeft="true" />
+            <TextView android:textSize="16.0sp" android:textColor="#ffffffff" android:id="@id/Edit_title" android:layout_width="wrap_content" android:layout_height="25.0dip" android:layout_marginTop="5.0dip" android:text="" android:layout_centerHorizontal="true" />
+            <ImageView android:id="@id/Img_show_title" android:layout_width="wrap_content" android:layout_height="15.0dip" android:layout_marginTop="25.0dip" android:src="@drawable/led_off" android:layout_centerHorizontal="true" />
+            <Button android:textColor="#ffffffff" android:id="@id/but_next" android:background="@drawable/base_bank2" android:layout_width="60.0dip" android:layout_height="35.0dip" android:text="@string/but_switch" android:layout_alignParentRight="true" />
+        </RelativeLayout>
+        <LinearLayout android:orientation="vertical" android:id="@id/tv_page1" android:layout_width="fill_parent" android:layout_height="fill_parent">
+            <LinearLayout android:id="@id/page1_line1" style="@style/line_stytle">
+                <TextView style="@style/base_key_bank" />
+                <Button android:id="@id/but_001" android:background="@drawable/power" android:text="" style="@style/base_spe" />
+                <TextView style="@style/base_key_bank" />
+                <TextView style="@style/base_null" />
+                <TextView style="@style/base_key_bank" />
+                <Button android:id="@id/but_002" android:background="@drawable/mute" android:text="" style="@style/base_spe" />
+                <TextView style="@style/base_key_bank" />
+            </LinearLayout>
+            <LinearLayout android:id="@id/page1_line2" android:layout_height="210.0dip" android:layout_weight="2.0" style="@style/line_stytle">
+                <RelativeLayout android:gravity="left|center" android:layout_gravity="left" android:orientation="horizontal" android:layout_width="210.0dip" android:layout_height="210.0dip">
+                    <Button android:id="@id/but_003" android:background="@drawable/menu_up" android:layout_width="90.0dip" android:layout_height="90.0dip" android:layout_marginLeft="60.0dip" android:layout_marginTop="0.0dip" />
+                    <Button android:id="@id/but_004" android:background="@drawable/menu_left" android:layout_width="90.0dip" android:layout_height="90.0dip" android:layout_marginLeft="0.0dip" android:layout_marginTop="60.0dip" />
+                    <Button android:id="@id/but_005" android:background="@drawable/menu_ok" android:layout_width="90.0dip" android:layout_height="90.0dip" android:layout_marginLeft="60.0dip" android:layout_marginTop="60.0dip" />
+                    <Button android:id="@id/but_006" android:background="@drawable/menu_right" android:layout_width="90.0dip" android:layout_height="90.0dip" android:layout_marginLeft="120.0dip" android:layout_marginTop="60.0dip" />
+                    <Button android:id="@id/but_007" android:background="@drawable/menu_down" android:layout_width="90.0dip" android:layout_height="90.0dip" android:layout_marginLeft="60.0dip" android:layout_marginTop="120.0dip" />
+                </RelativeLayout>
+                <RelativeLayout android:gravity="left|center" android:layout_gravity="left" android:orientation="horizontal" android:layout_width="20.0dip" android:layout_height="180.0dip">
+                    <TextView android:layout_width="20.0dip" style="@style/base_key_bank" />
+                </RelativeLayout>
+            </LinearLayout>
+            <LinearLayout android:id="@id/page1_line3" style="@style/line_stytle">
+                <TextView style="@style/base_key_bank" />
+                <Button android:id="@id/but_008" android:text="" style="@style/base_key" />
+                <TextView style="@style/base_key_bank" />
+                <Button android:id="@id/but_009" android:text="" style="@style/base_key" />
+                <TextView style="@style/base_key_bank" />
+                <Button android:id="@id/but_010" android:text="" style="@style/base_key" />
+                <TextView style="@style/base_key_bank" />
+            </LinearLayout>
+            <LinearLayout android:layout_gravity="center" android:id="@id/page1_line4" android:layout_height="180.0dip" android:layout_weight="2.0" style="@style/line_stytle">
+                <RelativeLayout android:gravity="center" android:layout_gravity="left" android:orientation="horizontal" android:background="@drawable/bg_vol" android:layout_width="60.0dip" android:layout_height="180.0dip">
+                    <Button android:id="@id/but_011" android:tag="3" android:background="@drawable/d_up" android:layout_width="60.0dip" android:layout_height="60.0dip" android:layout_marginTop="0.0dip" />
+                    <Button android:id="@id/but_012" android:tag="4" android:background="@drawable/d_down" android:layout_width="60.0dip" android:layout_height="60.0dip" android:layout_marginTop="120.0dip" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

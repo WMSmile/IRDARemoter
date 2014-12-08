@@ -1,0 +1,60 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${packageName}.${activityClass}" >
+
+    <Button
+        android:id="@+id/button_chmod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView_judge"
+        android:layout_toRightOf="@+id/button_start"
+        android:text="@string/chmod_data" 
+        android:visibility="invisible"/>
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textView1" />
+
+    <Button
+        android:id="@+id/button_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button_static"
+        android:layout_alignBottom="@+id/button_static"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="30dp"
+        android:text="确定" />
+
+    <TextView
+        android:id="@+id/textView_judge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_start"
+        android:layout_below="@+id/button_static"
+        android:text="遥控器配置更新是导入sdcard目录下的*.properties文件" />
+
+    <Button
+        android:id="@+id/button_static"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/spinner1"
+        android:layout_marginRight="27dp"
+        android:layout_marginTop="22dp"
+        android:text="更新/读取配置" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_start"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="22dp"
+        android:text="型号:" />
+
+</RelativeLayout>

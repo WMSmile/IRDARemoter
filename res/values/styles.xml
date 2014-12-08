@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme" parent="@android:style/Theme" />
+    <style name="Theme.Transparent" parent="@style/Theme">
+        <item name="android:colorForeground">#ffffffff</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
+    </style>
+    <style name="Theme.NoTitleBar" parent="@style/Theme">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+    <style name="line_stytle">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">70.0dip</item>
+        <item name="android:layout_weight">1.0</item>
+    </style>
+    <style name="base_spe">
+        <item name="android:textSize">18.0sp</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:layout_width">64.0dip</item>
+        <item name="android:layout_height">64.0dip</item>
+        <item name="android:layout_weight">2.0</item>
+    </style>
+    <style name="base_key">
+        <item name="android:textSize">18.0sp</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:tag">1</item>
+        <item name="android:background">@drawable/base_bank</item>
+        <item name="android:layout_width">64.0dip</item>
+        <item name="android:layout_height">64.0dip</item>
+        <item name="android:layout_weight">2.0</item>
+    </style>
+    <style name="base_null">
+        <item name="android:textSize">18.0sp</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:layout_width">64.0dip</item>
+        <item name="android:layout_height">64.0dip</item>
+        <item name="android:layout_weight">2.0</item>
+    </style>
+    <style name="base_key_bank">
+        <item name="android:textSize">18.0sp</item>
+        <item name="android:textColor">#ff000000</item>
+        <item name="android:layout_width">20.0dip</item>
+        <item name="android:layout_height">64.0dip</item>
+        <item name="android:layout_weight">1.0</item>
+    </style>
+    <style name="base_num">
+        <item name="android:textSize">20.0sp</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:tag">2</item>
+        <item name="android:background">@drawable/base_round</item>
+        <item name="android:layout_width">64.0dip</item>
+        <item name="android:layout_height">64.0dip</item>
+        <item name="android:layout_weight">2.0</item>
+    </style>
+    <style name="base_null_tv">
+        <item name="android:textSize">16.0sp</item>
+        <item name="android:textColor">#ff000000</item>
+        <item name="android:layout_width">12.0dip</item>
+        <item name="android:layout_height">30.0dip</item>
+        <item name="android:layout_weight">1.0</item>
+    </style>
+    <style name="control_list_item">
+        <item name="android:textSize">18.0sp</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:gravity">left|center</item>
+        <item name="android:layout_width">60.0dip</item>
+        <item name="android:layout_height">60.0dip</item>
+    </style>
+    <style name="control_list_mini">
+        <item name="android:textSize">16.0sp</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:gravity">left|center</item>
+        <item name="android:layout_height">40.0dip</item>
+    </style>
+    <style name="menu_list_item">
+        <item name="android:textSize">18.0sp</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:gravity">left|center</item>
+        <item name="android:paddingLeft">10.0dip</item>
+        <item name="android:layout_height">35.0dip</item>
+    </style>
+    <style name="dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+</resources>

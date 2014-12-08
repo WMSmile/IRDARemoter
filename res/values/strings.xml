@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">红外遥控器</string>
+    <string name="dialog_reg">注册</string>
+    <string name="dialog_login">登录</string>
+    <string name="dialog_modify">修改</string>
+    <string name="dialog_select">请选择</string>
+    <string name="dialog_confirm">确认</string>
+    <string name="dialog_concel">取消</string>
+    <string name="dialog_close">关闭</string>
+    <string name="dialog_download">下载</string>
+    <string name="dialog_later">以后再说</string>
+    <string name="dialog_detail">查看详情</string>
+    <string name="dialog_ignore">不再提示</string>
+    <string name="dialog_is_update">是否更新软件版本</string>
+    <string name="dialog_updating">软件更新版本下载中</string>
+    <string name="dialog_is_update_db">是否更新遥控库版本</string>
+    <string name="dialog_updating_db">遥控库更新下载中</string>
+    <string name="msg_new_vision">新版本号:</string>
+    <string name="msg_new_detail">更新说明:</string>
+    <string name="msg_update_time">更新时间:</string>
+    <string name="msg_mul_download">没有检测到SD卡,请到官网下载手动安装!</string>
+    <string name="msg_anto_download">请下载安装</string>
+    <string name="msg_anto_download_db">请下载更新</string>
+    <string name="msg_title">探索果科技提示</string>
+    <string name="msg_get_no">暂时没有更新信息!</string>
+    <string name="select_string">请选择要连接的设备</string>
+    <string name="msg_get_failed">获取更新信息失败!</string>
+    <string name="msg_db_update_success">遥控库已经成功更新到最新版本:</string>
+    <string name="msg_db_update_failed">遥控库更新失败!</string>
+    <string name="str_exit">是否确认退出程序?</string>
+    <string name="str_disconnt_exit">成功恢复系统音量,退出程序</string>
+
+    <string name="str_disconnt">成功关闭连接</string>
+    <string name="start">开始</string>
+    <string name="judge">判断虚拟机的版本</string>
+    <string name="but_home">首页</string>
+    <string name="but_switch">切屏</string>
+    <string name="but_back">返回</string>
+    <string name="but_save">保存</string>
+    <string name="but_study">学习编码</string>
+    <string name="but_open">打开遥控</string>
+    <string name="menu2_ON">已开启</string>
+    <string name="menu2_OFF">已关闭</string>
+    <string name="menu2_0">特殊手机支持</string>
+    <string name="menu2_1">长按时间间隔</string>
+    <string name="menu2_2">关于我们</string>
+    <string name="menu2_3">使用帮助</string>
+    <string name="menu2_4">屏幕反向</string>
+    <string name="menu2_5">按键震动</string>
+    <string name="menu2_6">合作伙伴</string>
+    <string name="menu2_7">选择定制遥控</string>
+    <string name="menu2_msg_on">是否确认开启?</string>
+    <string name="menu2_msg_off">是否确认关闭?</string>
+    <string name="menu2_msg_notice0">"
+只有极少手机音频输出信号极弱,进入遥控界面不能正常遥控时才需要开启!
+开启本功能时,在进入遥控界面2秒后才能进行按键操作!"</string>
+    <string name="menu2_msg_notice4">"
+有少部分手机耳机接口在屏幕下方,需要开启此功能!
+开启本功能后,如果屏幕显示没有反向,请在手机系统设置>>显示 选中自动旋转屏幕!"</string>
+    <string name="menu2_msg_notice1">您已经开启特殊手机支持,需等待2秒后,才能操作!</string>
+    <string name="msg_device_music">请退出音乐播放器!</string>
+    <string name="msg_device_none">请在耳机口接上遥控设备!</string>
+    <string name="search_edit_type">设备类型:</string>
+    <string name="search_edit_brand">设备品牌:</string>
+    <string name="search_edit_city">省份城市:</string>
+    <string name="search_edit_key">测试按键:</string>
+    <string name="search_edit_name">设备名称:</string>
+    <string name="search_edit_note">设备备注:</string>
+    <string name="search_edit_brand1">请输入或选择品牌</string>
+    <string name="search_edit_brand2">品牌如电信,有线,同洲</string>
+    <string name="search_edit_city1">请输入地区如广东深圳</string>
+    <string name="search_edit_speed">测试速度:</string>
+    <string name="search_edit_speed0">极速</string>
+    <string name="search_edit_speed1">中速</string>
+    <string name="search_edit_speed2">慢速</string>
+    <string name="search_edit_key0">省份城市</string>
+    <string name="search_edit_key1">品牌</string>
+    <string name="search_edit_select_key">搜索类型:</string>
+    <string name="search_edit_speed_msg">已设置搜索测试时间间隔为:</string>
+    <string name="search_init_msg">点击搜索图标或下一个开始搜索测试</string>
+    <string name="mod_edit_but_name">按键名称:</string>
+    <string name="mod_edit_but_code">按键编码:</string>
+    <string name="mod_edit_set_long">长</string>
+    <string name="mod_edit_set_short">短</string>
+    <string name="user_edit_name">用户名称:</string>
+    <string name="user_edit_pass">登录密码:</string>
+    <string name="user_edit_pass_confirm">确认密码:</string>
+    <string name="user_edit_pass_new">登录密码:</string>
+    <string name="user_edit_pass_old">原始密码:</string>
+    <string name="user_edit_name_QQ">建议用QQ号</string>
+    <string name="user_edit_realname">联系姓名:</string>
+    <string name="user_edit_tele">联系电话:</string>
+    <string name="user_edit_email">电子邮箱:</string>
+    <string name="user_edit_address">联系地址:</string>
+    <string name="search_code_show_cur0">正在搜索测试:</string>
+    <string name="search_code_show_cur1">信号测试结束,已搜索测试:</string>
+    <string name="search_code_show_cur2">搜索遥控超过800个,请精确品牌或编号.</string>
+    <string name="search_code_show_cur3">共搜索到:***,进入遥控信号测试!</string>
+    <string name="search_code_show_cur4">没有搜索到遥控器,请修改品牌或编号</string>
+    <string name="search_code_show_cur5">检测到遥控器已存在,遥控名称为:***,,请在遥控管理中删除!</string>
+    <string name="search_code_show_cur6">已经成功添加遥控器:</string>
+    <string name="search_but_no_next">已到最后一个!</string>
+    <string name="search_but_no_per">已到第一个!</string>
+    <string name="search_but_load">正在加载,请稍候...</string>
+    <string name="control_study_sueecess">编码学习成功!</string>
+    <string name="control_study_failed0">学习文件不存在!</string>
+    <string name="control_study_failed1">未检测到按键信号!</string>
+    <string name="control_study_failed2">编码长度检验错误</string>
+    <string name="control_open_speark">自动开启扬声器</string>
+    <string name="control_no_code">暂无编码</string>
+    <string name="control_open_air">请先按开关开启空调!</string>
+    <string name="control_modify_key">修改按钮信息:</string>
+    <string name="control_study_msg">请3秒内对准学习器按一下要学习的遥控器按钮!</string>
+    <string name="main_exit_msg">再按一次退出程序</string>
+    <string name="main_restore_vol">已恢复设置音量</string>
+    <string name="main_user_info">,修改个人信息:</string>
+    <string name="main_user_pass">,修改密码:</string>
+    <string name="main_user_pass_mod0">确认密码不能为空!</string>
+    <string name="main_user_pass_mod1">密码至少4位!</string>
+    <string name="main_user_pass_mod2">二次密码输入不一致!</string>
+    <string name="main_user_pass_mod3">旧密码不能为空!</string>
+    <string name="main_user_reg0">用户名至少为4位</string>
+    <string name="main_user_reg_title">请输入您的信息进行注册</string>
+    <string name="main_user_login_title">请输入用户名和密码</string>
+    <string name="main_user_login0">用户名不能为空</string>
+    <string name="main_user_login1">密码不能为空</string>
+    <string name="main_sever_msg">正等待服务器响应,请稍候</string>
+    <string name="main_sever_err">服务器响应错误</string>
+    <string name="main_network_err">网络连接失败,请检测网络是否畅通!</string>
+    <string name="main_notice_login">请先登录!</string>
+    <string name="main_user_login_msg">您已有账号登录!</string>
+    <string name="main_user_logout_msg">已注销登录</string>
+    <string name="main_no_backup">您没有遥控需要备份,请在管理或学习界面添加遥控</string>
+    <string name="main_user_login_success">登录成功!</string>
+    <string name="main_user_login_failed">对不起,用户名或密码输入错误,请重试!</string>
+    <string name="main_user_reg_success">注册成功,已自动登录!</string>
+    <string name="main_user_reg_failed">对不起,用户名已被使用!</string>
+    <string name="main_user_info_success">用户信息修改成功!</string>
+    <string name="main_user_failed">用户与密码验证失败,请重新登录!</string>
+    <string name="main_user_pw_success">密码修改成功,请重新登录!</string>
+    <string name="main_user_pw_failed">原始密码验证失败!</string>
+    <string name="main_mdata_back_info_title">在服务器上查到您最新的备份信息</string>
+    <string name="main_mdata_back_info_time">"
+备份时间:"</string>
+    <string name="main_mdata_back_info_count">"
+备份数量:"</string>
+    <string name="main_mdata_back_info_loc_count">本次备份数量:</string>
+    <string name="main_mdata_back_confirm">"
+是否确认开始备份?"</string>
+    <string name="main_mdata_back_confirm_cover">"
+是否确认覆盖备份?"</string>
+    <string name="main_mdata_back_doing">正在备份中,请稍候...</string>
+    <string name="main_mdata_restore_confirm">"
+是否确定要下载恢复,如有重复将会覆盖!"</string>
+    <string name="main_mdata_restore_doing">正在恢复中,请稍候...</string>
+    <string name="main_mdata_restore_no">对不起,您没有进行遥控备份!</string>
+    <string name="main_mdata_restore_success">"探索果遥控恢复成功!
+本次共恢复遥控:"</string>
+    <string name="main_mdata_restore_failed">"探索果遥控恢复失败!
+需恢复遥控:"</string>
+    <string name="main_mdata_success_count">,其中成功:</string>
+    <string name="main_mdata_back_success">"探索果遥控备份成功!
+本次共备份遥控:"</string>
+    <string name="main_mdata_back_failed">"探索果遥控备份失败!
+需备份遥控:"</string>
+    <string name="main_setting_titile0">设置充电时间:</string>
+    <string name="main_setting_titile1">设置长按键重发间隔:</string>
+    <string name="main_mod_control_titile0">修改遥控信息:</string>
+    <string name="main_mod_control_titile1">请输入新遥控器信息:</string>
+    <string name="main_control_success">操作成功</string>
+    <string name="main_control_failed">操作失败</string>
+    <string name="main_mod_control_name_msg">遥控名称不能为空!</string>
+    <string name="main_mod_control_air_msg">智能空调不支持学习功能,请在管理遥控中进行搜索添加!</string>
+    <string name="main_dele_control_title">是否确定要删除:</string>
+</resources>
