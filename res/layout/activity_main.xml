@@ -4,14 +4,14 @@
     android:layout_height="match_parent"
     tools:context="${packageName}.${activityClass}" >
 
-    <Button
+    <!-- Button
         android:id="@+id/button_chmod"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/textView_judge"
         android:layout_toRightOf="@+id/button_start"
         android:text="@string/chmod_data" 
-        android:visibility="invisible"/>
+        android:visibility="invisible"/-->
 
     <Spinner
         android:id="@+id/spinner1"
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/button_start"
         android:layout_below="@+id/button_static"
-        android:text="遥控器配置更新是导入sdcard目录下的*.properties文件" />
+        android:text="遥控器配置更新是导入sdcard目录下的/ir/*.properties文件" />
 
     <Button
         android:id="@+id/button_static"

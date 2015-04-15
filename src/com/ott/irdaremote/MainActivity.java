@@ -697,6 +697,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		FileInputStream localFileInputStream;
 		try {
 			localFileInputStream = new FileInputStream(localFile);
+			mp.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
 			mp.setDataSource(localFileInputStream.getFD());
 			mp.prepare();
 		} catch (FileNotFoundException e) {
