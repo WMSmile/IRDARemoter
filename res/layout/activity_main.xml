@@ -24,8 +24,8 @@
         android:id="@+id/button_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button_static"
-        android:layout_alignBottom="@+id/button_static"
+        android:layout_alignBaseline="@+id/button_scan"
+        android:layout_alignBottom="@+id/button_scan"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="30dp"
         android:text="确定" />
@@ -35,11 +35,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/button_start"
-        android:layout_below="@+id/button_static"
+        android:layout_below="@+id/button_scan"
         android:text="遥控器配置更新是导入sdcard目录下的/ir/*.properties文件" />
 
     <Button
-        android:id="@+id/button_static"
+        android:id="@+id/button_scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

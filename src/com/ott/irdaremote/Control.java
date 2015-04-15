@@ -173,7 +173,7 @@ public class Control extends Activity implements OnClickListener {
 
 		String value = ((MyApplication) ctx.getApplicationContext()).getMap().get(boradname).get(choosenKey);
 		String ir =  ((MyApplication) ctx.getApplicationContext()).getMap().get(boradname).get(DBHelper.IRADDR);
-		if(value.equals("null") || TextUtils.isEmpty(value)){
+		if(value == null ||value.equals("null") || TextUtils.isEmpty(value)){
 			Toast toast=Toast.makeText(getApplicationContext(), "按键没有键值!", Toast.LENGTH_SHORT); 
 			//显示toast信息 
 			toast.show(); 

@@ -45,9 +45,14 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener {
 
+	private static final String IRDA_REMOTER_TAG = "IrdaRemoter";
+	private static final String END_TSG = "end.tsg";
+	private static final String START_TSG = "start.tsg";
+	private static final String TSG_STR_TSG = "tsg_str.tsg";//hex 密码本
 	protected static final int THREAD = 0;
 	public static final int PALY = 1;
-	Button bt, button_static;
+	Button bt, button_scan;
+	
 	TextView tx;
 	Spinner sp;
 	Context ctx;
@@ -56,19 +61,10 @@ public class MainActivity extends Activity implements OnClickListener {
 	AudioManager am;
 	MediaPlayer mp;
 	String starttag, endtag, parsetag;
-	String[] O = new String[24];
-	int Q = 0;
-	byte[] P;
+	String[] s_tsg_pw = new String[24];
+	int m_tags_length = 0;
+	byte[] m_tags;
 	byte retArr[];
-
-	String[] vm_property = { "java.vm.name", "java.vm.specification.vendor",
-			"java.vm.vendor", "java.vm.specification.name",
-
-			"java.specification.name", "java.specification.vendor",
-
-			"java.vendor", "ro.yunos.version",
-
-			"lemur.vm.version" };
 
 	String[] property_name = { DBHelper.NAME, DBHelper.IRADDR, DBHelper.PW,
 			DBHelper.KEYUP, DBHelper.KEYDOWN, DBHelper.KEYLEFT,
@@ -86,13 +82,13 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		bt = (Button) findViewById(R.id.button_start);
 		tx = (TextView) findViewById(R.id.textView_judge);
-		button_static = (Button) findViewById(R.id.button_static);
+		button_scan = (Button) findViewById(R.id.button_scan);
 		sp = (Spinner) findViewById(R.id.spinner1);
 
 		bt.setOnClickListener(this);
-		button_static.setOnClickListener(this);
+		button_scan.setOnClickListener(this);
 		ctx = this;
-		d();
+		decodeHexPassword();
 		((MyApplication)getApplication()).setMainappHanddle(mhadler);
 
 		am = ((AudioManager) getSystemService("audio"));
@@ -105,7 +101,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		try {
 			dbHelper.createDataBase();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -113,7 +108,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				null, null, null);
 		if (cursor != null) {
 
-			Log.d("IrdaRemoter", "有数据");
+			Log.d(IRDA_REMOTER_TAG, "有数据");
 			
 			while(cursor.moveToNext()){
 
@@ -133,12 +128,12 @@ public class MainActivity extends Activity implements OnClickListener {
 			cursor.close();
 		} else {
 
-			Log.d("IrdaRemoter", "无数据");
+			Log.d(IRDA_REMOTER_TAG, "无数据");
 		}
 		// db.execSQL(sqlString);
 		List<String> namelist =new ArrayList<String>();
 		namelist.addAll(((MyApplication) ctx.getApplicationContext()).getMap().keySet());
-		Log.d("IrdaRemoter", "namelist数据:"+namelist.size());
+		Log.d(IRDA_REMOTER_TAG, "namelist数据:"+namelist.size());
 		
 		adapter = new ArrayAdapter<String>(ctx,android.R.layout.simple_list_item_checked ,namelist);    
         //第三步：为适配器设置下拉列表下拉时的菜单样式。    
@@ -147,8 +142,7 @@ public class MainActivity extends Activity implements OnClickListener {
         sp.setAdapter(adapter);    
         //第五步：为下拉列表设置各种事件的响应，这个事响应菜单被选中    
         sp.setOnItemSelectedListener(new Spinner.OnItemSelectedListener(){    
-            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {    
-                // TODO Auto-generated method stub    
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {  
                 /* 将所选mySpinner 的值带入myTextView 中*/    
                 //myTextView.setText("您选择的是："+ adapter.getItem(arg2));    
                 /* 将mySpinner 显示*/    
@@ -158,6 +152,13 @@ public class MainActivity extends Activity implements OnClickListener {
                 arg0.setVisibility(View.VISIBLE);    
             }    
         });
+        
+        //init start tag & end tag
+		starttag = getFormAssert(START_TSG);
+		endtag = getFormAssert(END_TSG);
+		
+		m_tags_length = (endtag.length() / 2);
+		m_tags = new byte[this.m_tags_length];
 
 	}
 
@@ -182,17 +183,17 @@ public class MainActivity extends Activity implements OnClickListener {
 		return (String) "";
 	}
 
-	public void d() {
+	//从 tsg_str.tsg 中解析出HEX 16进制对应的字符串 文件
+	public void decodeHexPassword() {
 		int i1 = 0;
 		int i2 = 0;
 		InputStreamReader localInputStreamReader = null;
 		BufferedReader localBufferedReader = null;
 		try {
 			localInputStreamReader = new InputStreamReader(getResources()
-					.getAssets().open("tsg_str.tsg"));
+					.getAssets().open(TSG_STR_TSG));
 			localBufferedReader = new BufferedReader(localInputStreamReader);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
@@ -215,9 +216,9 @@ public class MainActivity extends Activity implements OnClickListener {
 				} while (str.length() <= 4);
 
 				if (i2 == 0)
-					this.O[i2] = str.substring(1);
+					this.s_tsg_pw[i2] = str.substring(1);
 				else
-					this.O[i2] = str;
+					this.s_tsg_pw[i2] = str;
 			} catch (IOException localIOException) {
 				localIOException.printStackTrace();
 				return;
@@ -228,8 +229,10 @@ public class MainActivity extends Activity implements OnClickListener {
 			 */
 		}
 	}
-
-	public String d(String paramString) {
+	
+	
+    //有效载荷 添加
+	public String appendLoadHexData(String paramString) {
 		String str1 = paramString.toUpperCase();
 		StringBuilder localStringBuilder = new StringBuilder("");
 		while (true) {
@@ -239,11 +242,11 @@ public class MainActivity extends Activity implements OnClickListener {
 				continue;
 			String str2 = str1.substring(0, 2);
 			int i1 = Integer.parseInt(str2.substring(1), 16);
-			localStringBuilder.append(this.O[i1]);
-			Log.d("IrdaRemoter", "this.O1:" + this.O[i1]);
+			localStringBuilder.append(this.s_tsg_pw[i1]);
+			Log.d(IRDA_REMOTER_TAG, "this.O1:" + this.s_tsg_pw[i1]);
 			int i2 = Integer.parseInt(str2.substring(0, 1), 16);
-			localStringBuilder.append(this.O[i2]);
-			Log.d("IrdaRemoter", "this.O2:" + this.O[i2]);
+			localStringBuilder.append(this.s_tsg_pw[i2]);
+			Log.d(IRDA_REMOTER_TAG, "this.O2:" + this.s_tsg_pw[i2]);
 			if (str1.length() == 1)
 				str1 = "";
 			str1 = str1.substring(2);
@@ -313,14 +316,15 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	public int b(String paramString) {
+	//文件转换 字符串到 字节转换
+	public int covertStrToHex(String paramString) {
 		return Integer.parseInt(paramString, 16);
 	}
 
-	class cleanjob implements Runnable {
+	class playPcmJob implements Runnable {
 
 		PlayParameters pp;
-		public cleanjob(PlayParameters pp) {
+		public playPcmJob(PlayParameters pp) {
 			this.pp = pp;
 		}
 		
@@ -342,20 +346,20 @@ public class MainActivity extends Activity implements OnClickListener {
 			// makeDataFile("05aa55011515153fad2000404011ee");//公版右按键
 			//makeDataFile("05aa55011515153fad200010ef01fe");// 海美迪右按键
 
-			Log.d("IrdaRemoter", "to play data:" + pp.ir_address);
-			Log.d("IrdaRemoter", "to play data:" + pp.key);
+			Log.d(IRDA_REMOTER_TAG, "to play data:" + pp.ir_address);
+			Log.d(IRDA_REMOTER_TAG, "to play data:" + pp.key);
 			
-			String fanma = String.format("%1$#9x", (byte)b(pp.key));
-			Log.d("IrdaRemoter", "to play data~:" +fanma );
+			String fanma = String.format("%1$#9x", (byte)covertStrToHex(pp.key));
+			Log.d(IRDA_REMOTER_TAG, "to play data~:" +fanma );
 			
 			
-			fanma =String.format("%1$#9x", ~(byte)b(pp.key)|0xffffff00); 
-			Log.d("IrdaRemoter", "to play byte~:" + fanma);
+			fanma =String.format("%1$#9x", ~(byte)covertStrToHex(pp.key)|0xffffff00); 
+			Log.d(IRDA_REMOTER_TAG, "to play byte~:" + fanma);
 			
 			fanma = fanma.replace("0xffffff", "");
 			//fanma = fanma.substring(6);
 			String str = "05aa55011515153fad2000"+pp.ir_address+pp.key+fanma;
-			Log.d("IrdaRemoter", "to play data:" + str);
+			Log.d(IRDA_REMOTER_TAG, "to play data:" + str);
 			
 			makeDataFile(str);// 海美迪右按键
 
@@ -376,10 +380,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 		for (int i = 0; i < files.length; i++) {
 			File f = files[i];
-			Log.d("IrdaRemoter", "properties files path:" + f.getPath());
+			Log.d(IRDA_REMOTER_TAG, "properties files path:" + f.getPath());
 			if (f.isFile() && f.getPath().indexOf("/.") == -1) {
 
-				Log.d("IrdaRemoter",
+				Log.d(IRDA_REMOTER_TAG,
 						"properties files path_compare:" + f.getPath());
 				if (f.getPath()
 						.substring(f.getPath().length() - Extension.length())
@@ -396,7 +400,7 @@ public class MainActivity extends Activity implements OnClickListener {
 			 */
 		}
 
-		Log.d("IrdaRemoter", "properties files size:" + apklist.size());
+		Log.d(IRDA_REMOTER_TAG, "properties files size:" + apklist.size());
 		return apklist;
 	}
 
@@ -408,16 +412,16 @@ public class MainActivity extends Activity implements OnClickListener {
 					.getDatalist();
 			apklist.clear();
 			String str = Environment.getExternalStorageDirectory().getPath();
-			Log.d("IrdaRemoter", "properties START find file in:" + str);
+			Log.d(IRDA_REMOTER_TAG, "properties START find file in:" + str);
 
 			apklist.addAll(GetFiles(str + "/ir", "properties", false));
 
 			for (String str_ : apklist) {
 
-				Log.d("IrdaRemoter", "properties file:" + str_);
+				Log.d(IRDA_REMOTER_TAG, "properties file:" + str_);
 
 				String name = str_.substring(str_.indexOf("ir/") + 3);
-				Log.d("IrdaRemoter", "properties file name :" + name);
+				Log.d(IRDA_REMOTER_TAG, "properties file name :" + name);
 
 				if (name == null || TextUtils.isEmpty(name)) {
 					continue;
@@ -437,10 +441,8 @@ public class MainActivity extends Activity implements OnClickListener {
 					key_value.put("name", name);//
 
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				((MyApplication) ctx.getApplicationContext()).getMap().put(
@@ -461,7 +463,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
 				ContentValues cv = new ContentValues();
 				//cv.put("name", name_x);
-				Log.d("IrdaRemoter", "insert board name :" + name_x);
+				Log.d(IRDA_REMOTER_TAG, "insert board name :" + name_x);
 				for(String str_x : tomap.get(name_x).keySet()){
 					cv.put(str_x, tomap.get(name_x).get(str_x));
 				}
@@ -518,19 +520,18 @@ public class MainActivity extends Activity implements OnClickListener {
 
 				bis.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 			retArr = baos.toByteArray();
-			Log.d("IrdaRemoter", "parse job length:" + retArr.length);
+			Log.d(IRDA_REMOTER_TAG, "parse job length:" + retArr.length);
 
-			Log.d("IrdaRemoter", "first index is::" + findoffsetStrindex(1782));
+			Log.d(IRDA_REMOTER_TAG, "first index is::" + findoffsetStrindex(1782));
 
 			int j = 1782;
 			do {
 				result r = findoffsetStrindex(j);
-				Log.d("IrdaRemoter", "===index is::" + r);
+				Log.d(IRDA_REMOTER_TAG, "===index is::" + r);
 				if (r.index == -1) {
 					break;
 				}
@@ -577,12 +578,12 @@ public class MainActivity extends Activity implements OnClickListener {
 					if (!omitchoose.contains(Integer.valueOf(j))) {
 						las = j;
 
-						if (omitchoose.size() == 15 && O[j].length() / 2 == i) {
+						if (omitchoose.size() == 15 && s_tsg_pw[j].length() / 2 == i) {
 							index = las;
 							break;
 						}
 
-						if ((byte) b(O[j].substring(i * 2, 2 + i * 2)) != temp) {
+						if ((byte) covertStrToHex(s_tsg_pw[j].substring(i * 2, 2 + i * 2)) != temp) {
 
 							// Log.d("IrdaRemoter", "ommit index:" + j);
 
@@ -595,7 +596,7 @@ public class MainActivity extends Activity implements OnClickListener {
 					}
 				}
 
-				if (omitchoose.size() == 15 && O[las].length() / 2 == i) {
+				if (omitchoose.size() == 15 && s_tsg_pw[las].length() / 2 == i) {
 					break;
 				}
 
@@ -613,36 +614,32 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	public boolean makeDataFile(String paramString) {
 
-		starttag = getFormAssert("start.tsg");
-		endtag = getFormAssert("end.tsg");
-		Q = (endtag.length() / 2);
-		P = new byte[this.Q];
-		for (int i1 = 0; i1 < this.Q; ++i1) {
-			this.P[i1] = (byte) b(this.endtag.substring(i1 * 2, 2 + i1 * 2));
+		for (int i = 0; i < this.m_tags_length; ++i) {
+			this.m_tags[i] = (byte) covertStrToHex(this.endtag.substring(i * 2, 2 + i* 2));//end.tsg文件转换 字符串到 字节转换
 		}
 
 		if ((paramString == null) || (paramString.equals("")))
 			return false;
-		Log.d("IrdaRemoter", "Creat_and_play_file:" + paramString);
-		Log.d("IrdaRemoter", "data_start");
+		Log.d(IRDA_REMOTER_TAG, "Creat_and_play_file:" + paramString);
+		Log.d(IRDA_REMOTER_TAG, "data_start");
 		StringBuilder localStringBuilder = new StringBuilder("");
 		localStringBuilder.append(starttag);
-		localStringBuilder.append(d(paramString));
+		localStringBuilder.append(appendLoadHexData(paramString));
 
 		String str1 = localStringBuilder.toString();
-		Log.d("IrdaRemoter", "get_code");
-		int i1 = str1.length() / 2 + this.Q;
-		Log.d("IrdaRemoter", "str1 byte_lenth:" + str1.length() / 2);
-		Log.d("IrdaRemoter", "q byte_lenth:" + this.Q);
-		Log.d("IrdaRemoter", "i1 byte_lenth:" + i1);
+		Log.d(IRDA_REMOTER_TAG, "get_code");
+		int i1 = str1.length() / 2 + this.m_tags_length;
+		Log.d(IRDA_REMOTER_TAG, "str1 byte_lenth:" + str1.length() / 2);
+		Log.d(IRDA_REMOTER_TAG, "q byte_lenth:" + this.m_tags_length);
+		Log.d(IRDA_REMOTER_TAG, "i1 byte_lenth:" + i1);
 		String str2 = b(i1 + 38);
 		String str3 = b(i1);
-		Log.d("IrdaRemoter", "str2:" + str2 + ",str3:" + str3);
+		Log.d(IRDA_REMOTER_TAG, "str2:" + str2 + ",str3:" + str3);
 		String str4 = "52494646" + str2 + "57415645666D7420"
 				+ "120000000100020044AC000010B10200" + "04001000000064617461"
 				+ str3 + str1;
 		int i2 = str4.length() / 2;
-		Log.d("IrdaRemoter", "byte_lenth:" + String.valueOf(i2 + this.Q));
+		Log.d(IRDA_REMOTER_TAG, "byte_lenth:" + String.valueOf(i2 + this.m_tags_length));
 		byte[] arrayOfByte = new byte[i2];
 
 		File localFile;
@@ -651,34 +648,24 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		int i3 = 0;
 		do {
-			arrayOfByte[i3] = (byte) b(str4.substring(i3 * 2, 2 + i3 * 2));
+			arrayOfByte[i3] = (byte) covertStrToHex(str4.substring(i3 * 2, 2 + i3 * 2));
 			++i3;
-			/*
-			 * this.C = false; if (!localFile.exists()) break label560;
-			 * this.aS.reset(); this.aS.setLooping(false); FileInputStream
-			 * localFileInputStream = new FileInputStream(localFile);
-			 * this.aS.setDataSource(localFileInputStream.getFD());
-			 * this.aS.prepare(); this.aS.start(); Log.d("IrdaRemoter",
-			 * "play start OK");
-			 */
 		} while (i3 < str4.length() / 2);
 
 		FileOutputStream localFileOutputStream;
 		try {
 			localFileOutputStream = new FileOutputStream(localFile);
 			localFileOutputStream.write(arrayOfByte);
-			localFileOutputStream.write(this.P);
+			localFileOutputStream.write(this.m_tags);
 			localFileOutputStream.flush();
 			localFileOutputStream.close();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		Log.d("IrdaRemoter", "save_data OK");
+		Log.d(IRDA_REMOTER_TAG, "save_data OK");
 		return true;
 	}
 
@@ -701,16 +688,12 @@ public class MainActivity extends Activity implements OnClickListener {
 			mp.setDataSource(localFileInputStream.getFD());
 			mp.prepare();
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		mp.start();
@@ -722,23 +705,15 @@ public class MainActivity extends Activity implements OnClickListener {
 	@Override
 	public void onClick(View arg0) {
 		if (arg0.getId() == R.id.button_start) {
-			// startIrda();
-			// Intent intent = new Intent(Intent.ACTION_VIEW);
-			// intent.setData(Uri.parse("appstore://start?module=category&catCode=46"));
-			// startActivity(intent);
-			// startJudge();
-			
-			//new Thread(new cleanjob()).start();
 			Intent i = new Intent(this,Control.class);
 			Bundle bl = new Bundle();
 			bl.putCharSequence("name", (String)sp.getSelectedItem());
 			i.putExtras(bl);
 			startActivity(i);
-		} else if (arg0.getId() == R.id.button_static) {
-			// startStaticIP();
+		} else if (arg0.getId() == R.id.button_scan) {
 
 			new Thread(new insertDataJob()).start();
-			// new Thread(new checkjob()).start();
+			
 		}
 
 	}
@@ -800,12 +775,13 @@ public class MainActivity extends Activity implements OnClickListener {
 		        sp.setAdapter(adapter);    
 				break;
 			case PALY:
-				new Thread(new cleanjob((PlayParameters)msg.obj)).start();
+				new Thread(new playPcmJob((PlayParameters)msg.obj)).start();
 			}
 			super.handleMessage(msg);
 		}
 	};
 
+	@Deprecated
 	private void startIrda() {
 		try {
 			Object localObject = getSystemService("irda");
@@ -826,71 +802,8 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	private void startJudge() {
-		// TODO Auto-generated method stub
-		// Message m = mhadler.obtainMessage(THREAD, "test");
-		// m.sendToTarget();
 
-		try {
-			// execCommand("getprop");
-			execCommand("");
-			// execCommand("ls");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-		Properties p = System.getProperties();
 
-		StringBuilder strb = new StringBuilder(tx.getText());
-		for (String str : vm_property) {
-			System.err.println(p.get(str));
-
-			strb.append(str + ":" + p.get(str) + "\n");
-		}
-
-		tx.setText(strb.toString());
-
-	}
-
-	public void execCommand(String command) throws IOException {
-		Runtime runtime = Runtime.getRuntime();
-
-		Process proc = runtime.exec(new String[] { "sh", "-c",
-				"getprop|grep uuid" });
-
-		try {
-
-			if (proc.waitFor() != 0) {
-
-				System.err.println("exit value = " + proc.exitValue());
-
-			} else {
-
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(proc.getInputStream()));
-				int read;
-				char[] buffer = new char[4096];
-				StringBuffer output = new StringBuffer();
-				while ((read = reader.read(buffer)) > 0) {
-					output.append(buffer, 0, read);
-				}
-				reader.close();
-
-				// Waits for the command to finish.
-				// process.waitFor();
-
-				System.out.println(output.toString());
-				Message m = mhadler.obtainMessage(THREAD, output.toString());
-				m.sendToTarget();
-			}
-
-		} catch (InterruptedException e) {
-
-			System.err.println(e);
-
-		}
-
-	}
 
 }
