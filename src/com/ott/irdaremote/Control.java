@@ -12,6 +12,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.ott.irdaremote.entity.KlEntity;
+
 public class Control extends Activity implements OnClickListener {
 	
 	Button btn_pw,btn_mute;
@@ -28,15 +30,15 @@ public class Control extends Activity implements OnClickListener {
 	
 	Context ctx;
 	
-	String boradname="";
+	String boradName="";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tv);
 		
-		boradname = (String)getIntent().getExtras().get("name");
-		if(TextUtils.isEmpty(boradname)){
+		boradName = (String)getIntent().getExtras().get("name");
+		if(TextUtils.isEmpty(boradName)){
 			return;
 		}
 		ctx =this;
@@ -62,10 +64,10 @@ public class Control extends Activity implements OnClickListener {
 		 
 		 but_home =(Button) findViewById(R.id.but_home);
 
-		 btn_mouse.setText("鼠");;
-		 btn_menu.setText("三");;
-		 btn_back.setText("回");;
-		 but_home.setText("主");
+		 btn_mouse.setText("鼠标");
+		 btn_menu.setText("菜单");
+		 btn_back.setText("返回");
+		 but_home.setText("主页");
 
 			btn_pw.setOnClickListener(this);
 			btn_mute.setOnClickListener(this);
@@ -88,14 +90,14 @@ public class Control extends Activity implements OnClickListener {
 			 but_home.setOnClickListener(this);
 			 
 			 
-		Log.d("IrdaRemoter", "boradname name:" + boradname);
+		Log.d("IrdaRemoter", "boradname name:" + boradName);
 	}
 	
-	class cleanjob implements Runnable {
-		PlayParameters boardname;
+	class playJob implements Runnable {
+		PlayParameters parameter;
 
-		public cleanjob(PlayParameters boardname) {
-			this.boardname = boardname;
+		public playJob(PlayParameters parameter) {
+			this.parameter = parameter;
 		}
 
 		@Override
@@ -105,7 +107,7 @@ public class Control extends Activity implements OnClickListener {
 
 			//((MyApplication) ctx.getApplicationContext()).getMainapp().getmakeDataFile("05aa55011515153fad200010ef01fe");// 海美迪右按键
 			
-			Message m = ((MyApplication) ctx.getApplicationContext()).getMainappHanddle().obtainMessage(MainActivity.PALY, boardname);
+			Message m = ((MyApplication) ctx.getApplicationContext()).getMainappHanddle().obtainMessage(MainActivity.MEDIA_PALY, parameter);
 			m.sendToTarget();
 			//startSendIrda("/mnt/sdcard/tsg_temp_save2" + ".wav");
 			// 50aa 5510 5151 51f3 da02 00 00ff 708f :00ff07f8
@@ -120,48 +122,48 @@ public class Control extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		String choosenKey = "" ;
 		if(btn_pw.getId() == arg0.getId()){
-			choosenKey = DBHelper.PW;
+			choosenKey = KlEntity.PW;
 		}else if(btn_mute.getId() == arg0.getId()){
-			choosenKey = DBHelper.MUTE;
+			choosenKey = KlEntity.MUTE;
 		}else if(btn_keyup.getId() == arg0.getId()){
 
-			choosenKey = DBHelper.KEYUP;
+			choosenKey = KlEntity.KEYUP;
 		}else if(btn_keyleft.getId() == arg0.getId()){
 
-			choosenKey = DBHelper.KEYLEFT;
+			choosenKey = KlEntity.KEYLEFT;
 		}else if(btn_keyok.getId() == arg0.getId()){
 
-			choosenKey = DBHelper.KEYOK;
+			choosenKey = KlEntity.KEYOK;
 		}else if(btn_keyright.getId() == arg0.getId()){
 
-			choosenKey = DBHelper.KEYRIGHT;
+			choosenKey = KlEntity.KEYRIGHT;
 		}else if(btn_keydown.getId() == arg0.getId()){
 
-			choosenKey = DBHelper.KEYDOWN;
+			choosenKey = KlEntity.KEYDOWN;
 		}else if(btn_volup.getId() == arg0.getId()){
 
-			choosenKey = DBHelper.VOLUMEUP;
+			choosenKey = KlEntity.VOLUMEUP;
 		}else if(btn_voldown.getId() == arg0.getId()){
 
-			choosenKey = DBHelper.VOLUMEDOWN;
+			choosenKey = KlEntity.VOLUMEDOWN;
 		}else if(btn_chup.getId() == arg0.getId()){
 
-			choosenKey = DBHelper.CUP;
+			choosenKey = KlEntity.CUP;
 		}else if(btn_chdown.getId() == arg0.getId()){
 
-			choosenKey = DBHelper.CDOWN;
+			choosenKey = KlEntity.CDOWN;
 		}else if(btn_mouse.getId() == arg0.getId()){
 
-			choosenKey = DBHelper.MOUSE;
+			choosenKey = KlEntity.MOUSE;
 		}else if(btn_menu.getId() == arg0.getId()){
 
-			choosenKey = DBHelper.MENU;
+			choosenKey = KlEntity.MENU;
 		}else if(btn_back.getId() == arg0.getId()){
 
-			choosenKey = DBHelper.BACK;
+			choosenKey = KlEntity.BACK;
 		}else if(but_home.getId() == arg0.getId()){
 
-			choosenKey = DBHelper.HOME;
+			choosenKey = KlEntity.HOME;
 		}
 		
 		if(TextUtils.isEmpty(choosenKey)){
@@ -171,16 +173,21 @@ public class Control extends Activity implements OnClickListener {
 			return;
 		}
 
-		String value = ((MyApplication) ctx.getApplicationContext()).getMap().get(boradname).get(choosenKey);
-		String ir =  ((MyApplication) ctx.getApplicationContext()).getMap().get(boradname).get(DBHelper.IRADDR);
+		String value = ((MyApplication) ctx.getApplicationContext()).getMap().get(boradName).get(choosenKey);
+		String ir =  ((MyApplication) ctx.getApplicationContext()).getMap().get(boradName).get(KlEntity.IRADDR);
+		ir = ir.substring(2, 4) + ir.substring(0, 2);
 		if(value == null ||value.equals("null") || TextUtils.isEmpty(value)){
 			Toast toast=Toast.makeText(getApplicationContext(), "按键没有键值!", Toast.LENGTH_SHORT); 
 			//显示toast信息 
 			toast.show(); 
 			return;
 		}
-		PlayParameters pp = new PlayParameters(boradname, value,ir);
+		String value_hex = Integer.toHexString(Integer.valueOf(value));
+		if(value_hex.length() ==1 ){
+			value_hex = "0"+value_hex;
+		}
+		PlayParameters pp = new PlayParameters(boradName, value_hex,ir);
 
-		new Thread(new cleanjob(pp)).start();
+		new Thread(new playJob(pp)).start();
 	}
 }

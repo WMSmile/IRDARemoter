@@ -18,6 +18,10 @@ import java.util.Properties;
 
 import org.apache.http.util.EncodingUtils;
 
+import com.ott.irdaremote.entity.KlEntity;
+import com.ott.irdaremote.utils.FileParser;
+import com.ott.irdaremote.utils.Util;
+
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -45,35 +49,36 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity implements OnClickListener {
 
-	private static final String IRDA_REMOTER_TAG = "IrdaRemoter";
+	private static final String AUDIO = "audio";
+	private static final String IRDA_REMOTER_TAG = MyApplication.TAG;
 	private static final String END_TSG = "end.tsg";
 	private static final String START_TSG = "start.tsg";
 	private static final String TSG_STR_TSG = "tsg_str.tsg";//hex 密码本
-	protected static final int THREAD = 0;
-	public static final int PALY = 1;
-	Button bt, button_scan;
+	protected static final int UI_UPDATE_THREAD = 0;
+	public static final int MEDIA_PALY = 1;
+	Button bt, buttonScan;
 	
 	TextView tx;
 	Spinner sp;
 	Context ctx;
 	ArrayAdapter<String> adapter;
 
-	AudioManager am;
-	MediaPlayer mp;
+	AudioManager audioManager;
+	MediaPlayer mediaPlayer;
 	String starttag, endtag, parsetag;
 	String[] s_tsg_pw = new String[24];
 	int m_tags_length = 0;
 	byte[] m_tags;
 	byte retArr[];
 
-	String[] property_name = { DBHelper.NAME, DBHelper.IRADDR, DBHelper.PW,
+	/*String[] property_name = { DBHelper.NAME, DBHelper.IRADDR, DBHelper.PW,
 			DBHelper.KEYUP, DBHelper.KEYDOWN, DBHelper.KEYLEFT,
 			DBHelper.KEYRIGHT, DBHelper.KEYOK, DBHelper.VOLUMEUP,
 			DBHelper.VOLUMEDOWN, DBHelper.BACK, DBHelper.MENU, DBHelper.CUP,
-			DBHelper.CDOWN, DBHelper.MOUSE ,DBHelper.MUTE,DBHelper.HOME};
+			DBHelper.CDOWN, DBHelper.MOUSE ,DBHelper.MUTE,DBHelper.HOME};*/
 
 
-	DBHelper dbHelper ;//= new DBHelper(this);
+	//DBHelper dbHelper ;//= new DBHelper(this);
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,22 +87,22 @@ public class MainActivity extends Activity implements OnClickListener {
 
 		bt = (Button) findViewById(R.id.button_start);
 		tx = (TextView) findViewById(R.id.textView_judge);
-		button_scan = (Button) findViewById(R.id.button_scan);
+		buttonScan = (Button) findViewById(R.id.button_scan);
 		sp = (Spinner) findViewById(R.id.spinner1);
 
 		bt.setOnClickListener(this);
-		button_scan.setOnClickListener(this);
+		buttonScan.setOnClickListener(this);
 		ctx = this;
 		decodeHexPassword();
 		((MyApplication)getApplication()).setMainappHanddle(mhadler);
 
-		am = ((AudioManager) getSystemService("audio"));
-		am.getStreamMaxVolume(3);
-		am.getStreamVolume(3);
-		mp = new MediaPlayer();
-		mp.setOnCompletionListener(new ca(this));
+		audioManager = ((AudioManager) getSystemService(AUDIO));
+		audioManager.getStreamMaxVolume(3);
+		audioManager.getStreamVolume(3);
+		mediaPlayer = new MediaPlayer();
+		mediaPlayer.setOnCompletionListener(new ca(this));
 
-		dbHelper = new DBHelper(this);
+		/*dbHelper = new DBHelper(this);
 		try {
 			dbHelper.createDataBase();
 		} catch (IOException e) {
@@ -143,15 +148,15 @@ public class MainActivity extends Activity implements OnClickListener {
         //第五步：为下拉列表设置各种事件的响应，这个事响应菜单被选中    
         sp.setOnItemSelectedListener(new Spinner.OnItemSelectedListener(){    
             public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {  
-                /* 将所选mySpinner 的值带入myTextView 中*/    
+                //将所选mySpinner 的值带入myTextView 中 
                 //myTextView.setText("您选择的是："+ adapter.getItem(arg2));    
-                /* 将mySpinner 显示*/    
+                // 将mySpinner 显示   
                 arg0.setVisibility(View.VISIBLE);    
             }    
             public void onNothingSelected(AdapterView<?> arg0) {    
                 arg0.setVisibility(View.VISIBLE);    
             }    
-        });
+        });*/
         
         //init start tag & end tag
 		starttag = getFormAssert(START_TSG);
@@ -159,6 +164,9 @@ public class MainActivity extends Activity implements OnClickListener {
 		
 		m_tags_length = (endtag.length() / 2);
 		m_tags = new byte[this.m_tags_length];
+		
+
+		new Thread(new ScanDataJob()).start();// get kl files
 
 	}
 
@@ -404,13 +412,20 @@ public class MainActivity extends Activity implements OnClickListener {
 		return apklist;
 	}
 
-	class insertDataJob implements Runnable {
+	//KL文件扫描
+	class ScanDataJob implements Runnable {
+
+		public static final String IR_FOLDER = "ir/";
+		public static final String KL_START = "YunOS_";
+		public static final String KL_END = ".kl";
 
 		@Override
 		public void run() {
-			List<String> apklist = ((MyApplication) ctx.getApplicationContext())
+			/*List<String> apklist = ((MyApplication) ctx.getApplicationContext())
 					.getDatalist();
 			apklist.clear();
+			
+			
 			String str = Environment.getExternalStorageDirectory().getPath();
 			Log.d(IRDA_REMOTER_TAG, "properties START find file in:" + str);
 
@@ -449,10 +464,58 @@ public class MainActivity extends Activity implements OnClickListener {
 						name, key_value);
 
 			}
+			*/
+			//new parse method
+			List<String> kl_filelist = ((MyApplication) ctx.getApplicationContext())
+					.getDatalist();
+			kl_filelist.clear();
+			
+			String str = Environment.getExternalStorageDirectory().getPath();
+			Log.d(IRDA_REMOTER_TAG, "properties START find file in:" + str);
+			
+			kl_filelist.addAll(GetFiles(str + "/ir", "kl", false));
+			for(String file:kl_filelist){
+				
+				Log.d(IRDA_REMOTER_TAG, "properties file:" + file);
+
+				String name = file.substring(file.indexOf(IR_FOLDER) + IR_FOLDER.length());
+
+				if (name == null || TextUtils.isEmpty(name) || !name.startsWith(KL_START) || name.equals("Vendor_0001_Product_0001_Version_0100")) {
+
+					Log.d(IRDA_REMOTER_TAG, "kl file quit!");
+					continue;
+				}
+				name = name .replace(KL_END, "");
+				Log.d(IRDA_REMOTER_TAG, "kl file name :" + name);
+
+				//YunOS_ff00_Vendor_09D0.kl
+				//YunOS_f906.kl
+				String ir_tmp = name.trim();
+				ir_tmp = ir_tmp.substring(ir_tmp.indexOf(KL_START)+KL_START.length());
+				if(ir_tmp.length() < 4 || !Util.isNumericOrLetter(ir_tmp.substring(0, 4))){
+
+					Log.d(IRDA_REMOTER_TAG, "error kl file:" + name+",ir_tmp="+ir_tmp);
+					continue;
+				}
+				HashMap<String, String> key_value_map = new HashMap<String, String>();
+				key_value_map.put(KlEntity.NAME, name);
+				
+				ir_tmp = ir_tmp.substring(0, 4);
+				key_value_map.put(KlEntity.IRADDR, ir_tmp);
+				
+				try {
+					FileParser.readFileByScan(file,key_value_map);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}finally{
+					((MyApplication) ctx.getApplicationContext()).getMap().put(
+							name, key_value_map);
+				}
+			}
 			
 			//update db
 
-			SQLiteDatabase db = dbHelper.getWritableDatabase();
+			/*SQLiteDatabase db = dbHelper.getWritableDatabase();
 			HashMap<String, HashMap<String, String>> tomap = ((MyApplication) ctx.getApplicationContext()).getMap();
 			
 			for(String name : tomap.keySet()){
@@ -475,17 +538,17 @@ public class MainActivity extends Activity implements OnClickListener {
 				}
 
 				cursor.close();
-			}
+			}*/
 
 			
 			//notify to update spinner ui
-			Message m = mhadler.obtainMessage(THREAD, "");
+			Message m = mhadler.obtainMessage(UI_UPDATE_THREAD, "");
 			m.sendToTarget();
 		}
 	}
 	
 
-	class checkjob implements Runnable {
+	class checkJob implements Runnable {
 
 		@Override
 		public void run() {
@@ -678,15 +741,15 @@ public class MainActivity extends Activity implements OnClickListener {
 		 * localFileOutputStream.close();
 		 */
 
-		mp.reset();
-		mp.setLooping(false);
+		mediaPlayer.reset();
+		mediaPlayer.setLooping(false);
 
 		FileInputStream localFileInputStream;
 		try {
 			localFileInputStream = new FileInputStream(localFile);
-			mp.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
-			mp.setDataSource(localFileInputStream.getFD());
-			mp.prepare();
+			mediaPlayer.setAudioStreamType(AudioManager.STREAM_VOICE_CALL);
+			mediaPlayer.setDataSource(localFileInputStream.getFD());
+			mediaPlayer.prepare();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -696,7 +759,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		mp.start();
+		mediaPlayer.start();
 		((Vibrator) getSystemService("vibrator")).vibrate(new long[] { 5L, 10L,
 				5L, 10L }, -1);
 
@@ -712,57 +775,16 @@ public class MainActivity extends Activity implements OnClickListener {
 			startActivity(i);
 		} else if (arg0.getId() == R.id.button_scan) {
 
-			new Thread(new insertDataJob()).start();
+			new Thread(new ScanDataJob()).start();
 			
 		}
 
 	}
 
-	private void startStaticIP() {
-
-		int netStatus = -1;
-		try {
-			ConnectivityManager connectManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo activeNetworkInfo = connectManager
-					.getActiveNetworkInfo();
-			if (activeNetworkInfo != null) {
-				if (activeNetworkInfo.isAvailable()
-						&& activeNetworkInfo.isConnected()) {
-					netStatus = 1;
-				} else if (activeNetworkInfo.isConnected()) {
-					netStatus = 2;
-				} else {
-					netStatus = 3;
-				}
-				tx.setText(String.valueOf(netStatus));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		/*
-		 * ConnectivityManager mService = (ConnectivityManager)
-		 * getSystemService(Context.CONNECTIVITY_SERVICE); EthernetManager
-		 * mEthManager = (EthernetManager)
-		 * getSystemService(Context.ETHERNET_SERVICE); if
-		 * (mEthManager.getState() == EthernetManager.ETHERNET_STATE_ENABLED) {
-		 * EthernetDevInfo mInterfaceInfo = mEthManager.getSavedConfig(); String
-		 * mIp; String mMask; String mGw; String mDns; mIp = "192.168.0.118";
-		 * mMask = "255.255.255.0"; mGw = "192.168.0.1"; mDns = "192.168.0.1";
-		 * mInterfaceInfo
-		 * .setConnectMode(EthernetDevInfo.ETHERNET_CONN_MODE_MANUAL);
-		 * mInterfaceInfo.setIpAddress(mIp); mInterfaceInfo.setNetMask(mMask);
-		 * mInterfaceInfo.setDnsAddr(mDns); mInterfaceInfo.setGateWay(mGw); try
-		 * { mEthManager.updateDevInfo(mInterfaceInfo); Thread.sleep(500); }
-		 * catch (Exception e) { e.printStackTrace(); } } else {
-		 * Toast.makeText(this, "Ethernet state disabled!", 5000).show(); }
-		 */
-	}
-
 	Handler mhadler = new Handler() {
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
-			case THREAD:
+			case UI_UPDATE_THREAD:
 				//tx.setText((String) msg.obj);
 				//update insert data
 				List<String> namelist =new ArrayList<String>();
@@ -774,7 +796,7 @@ public class MainActivity extends Activity implements OnClickListener {
 		        //第四步：将适配器添加到下拉列表上    
 		        sp.setAdapter(adapter);    
 				break;
-			case PALY:
+			case MEDIA_PALY:
 				new Thread(new playPcmJob((PlayParameters)msg.obj)).start();
 			}
 			super.handleMessage(msg);

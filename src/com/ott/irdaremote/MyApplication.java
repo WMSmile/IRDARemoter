@@ -9,6 +9,8 @@ import android.content.Context;
 import android.os.Handler;
 
 public class MyApplication extends Application {
+	
+	static public String TAG = "IRDA";
 
 	private List<String> datalist = new ArrayList<String>(); // ≈‰÷√Ω·π˚ List
 
